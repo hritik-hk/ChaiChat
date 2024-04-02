@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSocket } from "./hooks/socket";
 
 function App() {
-  const { sendMessage } = useSocket();
+  const { sendMessage, messages } = useSocket();
   const [message, setMessage] = useState<string>("");
 
   return (
@@ -25,6 +25,12 @@ function App() {
         </button>
         <div>
           <h1>All message will appear here</h1>
+          <div>
+            {messages.map((msg, idx) => {
+              console.log(msg);
+              return <li key={idx}>{msg}</li>;
+            })}
+          </div>
         </div>
       </div>
     </>
