@@ -18,6 +18,7 @@ export default class SocketService {
     io.on("connect", (socket) => {
       console.log("new user connected", socket.id);
       socket.on("message", (msg: string) => {
+        console.log(msg)
         console.log("message: " + msg);
       });
     });
