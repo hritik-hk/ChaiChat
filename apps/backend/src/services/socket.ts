@@ -3,7 +3,7 @@ import { Redis } from "ioredis";
 
 const redis_connection = {
   host: process.env.REDIS_HOST_URL,
-  port: process.env.REDIS_PORT as number | undefined,
+  port: parseInt(process.env.REDIS_PORT as string),
   username: process.env.REDIS_USERNAME,
   password: process.env.REDIS_PASSWORD,
 };
@@ -28,6 +28,11 @@ export default class SocketService {
 
   public initListeners() {
     const io = this._io;
+
+    // io.use((socket, next) => {
+
+    // });
+
     io.on("connect", (socket) => {
       console.log("new user connected", socket.id);
       socket.on("message", async (msg: string) => {
@@ -35,6 +40,10 @@ export default class SocketService {
 
         //publish msg to remote redis server
         await pub.publish("MESSAGES", JSON.stringify({ msg }));
+      });
+
+      socket.on("disconnect", () => {
+        console.log(`user disconnected- ${socket.id}`);
       });
     });
 
