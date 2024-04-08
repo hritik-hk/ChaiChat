@@ -3,9 +3,8 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
-import { issueJWT } from "./lib/utils.js";
-
 import SocketService from "./services/socket.js";
+import userRouter from "./route/auth.js";
 
 const PORT = process.env.PORT;
 
@@ -24,19 +23,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ msg: "backend is working!" });
 });
 
-app.get("/login", (req, res) => {
-  const { token, expires } = issueJWT({
-    _id: "yrtewett1e8rg82ge7",
-    name: "hritik",
-  });
-
-  res
-    .cookie("jwt", token, {
-      httpOnly: true,
-    })
-    .status(200)
-    .redirect("http://localhost:5173/chat");
-});
+app.use("/api/user", userRouter);
 
 server.listen(PORT, () => {
   console.log(`server listening on PORT: ${PORT}`);

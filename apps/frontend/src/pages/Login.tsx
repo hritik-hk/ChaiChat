@@ -1,4 +1,32 @@
 export default function Login() {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const payload = Object.fromEntries(formData);
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set appropriate content type for JSON data
+      },
+      body: JSON.stringify(payload), // Convert data object to JSON string for the body
+    };
+
+    fetch("http://localhost:8080/api/user/login", options)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`some went wrong error code: ${response.status}`);
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then((responseData) => {
+        console.log("Data successfully sent:", responseData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
 
   return (
     <>
@@ -7,22 +35,20 @@ export default function Login() {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Sign in to your account
           </h1>
-          <form className="space-y-4 md:space-y-6" action="http://localhost:8080/login" >
+          <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div>
               <input
-                type="email"
-                name="email"
-                id="email"
+                type="text"
+                name="username"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="email id"
+                placeholder="username"
               />
             </div>
             <div>
               <input
                 type="password"
                 name="password"
-                id="password"
-                placeholder="••••••••"
+                placeholder="password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
