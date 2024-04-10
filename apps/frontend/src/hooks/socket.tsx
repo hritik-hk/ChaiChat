@@ -4,7 +4,7 @@ import { SocketContext } from "../context/SocketContext";
 export const useSocket = () => {
   const state = useContext(SocketContext);
   if (!state) {
-    throw new Error("state is undefined");
+    throw new Error("socket state is undefined");
   }
 
   return state;

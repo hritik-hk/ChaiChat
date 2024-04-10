@@ -7,7 +7,8 @@ interface hashPasswordType {
 }
 
 interface User {
-  username: string;
+  id: string;
+  email: string;
 }
 
 interface jwt {
@@ -42,7 +43,7 @@ function issueJWT(user: User): jwt {
   const jwt_secret = process.env.JWT_SECRET as string;
 
   const payload = {
-    userId: user.username,
+    userId: user.id,
   };
 
   const signedToken = jwt.sign(payload, jwt_secret, {

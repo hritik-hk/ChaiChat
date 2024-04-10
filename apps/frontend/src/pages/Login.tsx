@@ -1,5 +1,10 @@
+import { useAuth } from "../hooks/auth";
+import { Navigate } from "react-router-dom";
+
 export default function Login() {
-  const handleSubmit = (e: any) => {
+  const { isLoggedIn } = useAuth();
+
+  const handleSubmit = (e:any) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -10,10 +15,11 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json", // Set appropriate content type for JSON data
       },
+      credentials: "include" as RequestCredentials,
       body: JSON.stringify(payload), // Convert data object to JSON string for the body
     };
 
-    fetch("http://localhost:8080/api/user/login", options)
+    fetch("http://localhost:8080/api/auth/login", options)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`some went wrong error code: ${response.status}`);
@@ -30,6 +36,7 @@ export default function Login() {
 
   return (
     <>
+      {isLoggedIn && <Navigate to="/chat" replace={true}></Navigate>}
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">

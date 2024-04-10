@@ -38,7 +38,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:8080");
+    const socket = io("http://localhost:8080", {
+      withCredentials: true,
+    });
     setSocket(socket);
     socket.on("message", onMessageReceive);
 

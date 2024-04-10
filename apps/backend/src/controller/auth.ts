@@ -1,7 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { genPassword, issueJWT, validPassword } from "../lib/utils.js";
-import { error } from "console";
 
 const prisma = new PrismaClient();
 
@@ -44,15 +43,21 @@ const loginUser = async (req: express.Request, res: express.Response) => {
     );
 
     if (isValid) {
-      const { token, expires } = issueJWT({ username }); //issue token
+      const { token, expires } = issueJWT({ id: user.id, email: user.email }); //issue token
+
+      const cookieOptions = {
+        httpOnly: true,
+        maxAge: expires,
+      };
+
+      // if (process.env.NODE_ENV == "production") {
+      //   cookieOptions.secure = true;
+      // }
 
       res
         .status(200)
-        .cookie("jwt", token, {
-          maxAge: expires ,
-          httpOnly: true,
-        })
-        .json({ token: token });
+        .cookie("jwt", token, cookieOptions)
+        .json({ success: true, token: token });
     } else {
       res.status(401).json({ msg: "invalid credentials" });
     }
@@ -61,4 +66,18 @@ const loginUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export { createUser, loginUser };
+const checkAuth = async (req: express.Request, res: express.Response) => {
+  let token = null;
+  try {
+    if (req.body.user && req.headers.cookie) {
+      token = req.headers.cookie?.split("=")[1];
+      res.status(200).json({ token });
+    } else {
+      res.status(401).json({ token });
+    }
+  } catch (err) {
+    console.log("checkAuth",err);
+  }
+};
+
+export { createUser, loginUser, checkAuth };

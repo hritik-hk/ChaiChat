@@ -1,13 +1,13 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css"
+import "./index.css";
 import App from "./App.tsx";
 import { SocketProvider } from "./context/SocketContext.tsx";
+import { AuthContextProvider } from "./context/AuthContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <AuthContextProvider>
     <SocketProvider>
-    <App />
+      <App />
     </SocketProvider>
-  </React.StrictMode>
+  </AuthContextProvider>
 );
