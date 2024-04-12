@@ -4,11 +4,21 @@ import Chat from "./pages/Chat";
 import { useEffect } from "react";
 import { useAuth } from "./hooks/auth";
 import Protected from "./components/Protected";
+import Home from "./pages/Home";
+import { getUrl } from "./utils/helpers";
 
 const router = createBrowserRouter([
   {
-    path: "/chat",
+    path: "/",
+    element: (
+      <Protected>
+        <Home />,
+      </Protected>
+    ),
+  },
 
+  {
+    path: "/chat",
     element: (
       <Protected>
         <Chat />,
@@ -25,7 +35,7 @@ function App() {
   const { isLoggedIn, setIsLoggedIn, setAuthUser } = useAuth();
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/auth/check", {
+    fetch(getUrl("auth/check"), {
       credentials: "include" as RequestCredentials,
     })
       .then((response) => {
@@ -47,7 +57,7 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetch("http://localhost:8080/api/user/own", {
+      fetch(getUrl("user/own"), {
         credentials: "include" as RequestCredentials,
       })
         .then((response) => {

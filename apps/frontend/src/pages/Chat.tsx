@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useSocket } from "../hooks/socket";
+import Navbar from "../components/Navbar";
 
 export default function Chat() {
-  const { sendMessage, messages } = useSocket();
+  const { sendDM, messages } = useSocket();
   const [message, setMessage] = useState<string>("");
 
   return (
     <>
+    <Navbar />
       <div className="p-3">
         <div className="w-1/3 mt-3 mb-3">
           <input
@@ -18,7 +20,7 @@ export default function Chat() {
         </div>
         <button
           type="button"
-          onClick={() => sendMessage(message)}
+          onClick={() => sendDM(message)}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           send
@@ -27,7 +29,6 @@ export default function Chat() {
           <h1>All message will appear here</h1>
           <div>
             {messages.map((msg, idx) => {
-              console.log(msg);
               return <li key={idx}>{msg}</li>;
             })}
           </div>

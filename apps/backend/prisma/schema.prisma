@@ -14,9 +14,19 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(uuid())
-  email         String  @unique
-  username      String? @unique
+  id            String @id @default(uuid())
+  email         String @unique
+  username      String @unique
   password_salt String
   password_hash String
+}
+
+model Chat {
+  id           String   @id @default(uuid())
+  admin        String
+  isGroupChat  Boolean
+  name         String
+  participants String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

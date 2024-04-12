@@ -1,7 +1,7 @@
 import express from "express";
-import { fetchUserInfo } from "../controller/user.js";
+import { fetchLoggedInUser, fetchUserByUsername } from "../controller/user.js";
 const router = express.Router();
 
-router.get("/own", fetchUserInfo);
+router.get("/own", fetchLoggedInUser).get("/:username", fetchUserByUsername);
 
 export default router;

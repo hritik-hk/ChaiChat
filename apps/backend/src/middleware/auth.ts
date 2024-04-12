@@ -1,6 +1,9 @@
-import express from "express";
 import jwt from "jsonwebtoken";
+import cookie from "cookie";
 import { PrismaClient } from "@prisma/client";
+import { Response, NextFunction } from "express";
+import { IRequest } from "../interfaces/common.js";
+
 const prisma = new PrismaClient();
 
 interface payload {
@@ -8,14 +11,14 @@ interface payload {
 }
 
 export default async function isAuth(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  req: IRequest,
+  res: Response,
+  next: NextFunction
 ) {
   try {
-    let token = null;
-    if (req.headers.cookie !== undefined) {
-      token = req.headers.cookie?.split("=")[1] as string;
+    const cookies = cookie.parse(req.headers?.cookie || "");
+    const token = cookies?.jwt;
+    if (token) {
       const jwt_secret = process.env.JWT_SECRET as string;
       const userPayload = jwt.verify(token, jwt_secret) as payload;
 
@@ -26,7 +29,7 @@ export default async function isAuth(
       if (!user) {
         return res.status(401);
       }
-      req.body.user = user;
+      req.user = user;
     } else {
       return res.sendStatus(401);
     }

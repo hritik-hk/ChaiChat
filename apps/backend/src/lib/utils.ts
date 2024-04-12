@@ -1,14 +1,10 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { IUser } from "../interfaces/common.js";
 
 interface hashPasswordType {
   salt: string;
   hash: string;
-}
-
-interface User {
-  id: string;
-  email: string;
 }
 
 interface jwt {
@@ -38,7 +34,7 @@ function validPassword(password: string, hash: string, salt: string): boolean {
   return crypto.timingSafeEqual(hashedPassword, Buffer.from(hash, "base64"));
 }
 
-function issueJWT(user: User): jwt {
+function issueJWT(user: IUser): jwt {
   const expiresIn = parseInt(process.env.JWT_EXPIRY as string);
   const jwt_secret = process.env.JWT_SECRET as string;
 

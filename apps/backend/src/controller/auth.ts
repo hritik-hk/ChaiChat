@@ -1,11 +1,12 @@
-import express from "express";
+import { Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { genPassword, issueJWT, validPassword } from "../lib/utils.js";
+import { IRequest } from "../interfaces/common.js";
 
 const prisma = new PrismaClient();
 
 //register or login
-const createUser = async (req: express.Request, res: express.Response) => {
+const createUser = async (req: IRequest, res: Response) => {
   try {
     const { hash, salt } = genPassword(req.body.password);
 
@@ -23,7 +24,7 @@ const createUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
-const loginUser = async (req: express.Request, res: express.Response) => {
+const loginUser = async (req: IRequest, res: Response) => {
   const { username, password } = req.body;
 
   try {
@@ -43,7 +44,11 @@ const loginUser = async (req: express.Request, res: express.Response) => {
     );
 
     if (isValid) {
-      const { token, expires } = issueJWT({ id: user.id, email: user.email }); //issue token
+      const { token, expires } = issueJWT({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      }); //issue token
 
       const cookieOptions = {
         httpOnly: true,
@@ -66,17 +71,17 @@ const loginUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
-const checkAuth = async (req: express.Request, res: express.Response) => {
+const checkAuth = async (req: IRequest, res: Response) => {
   let token = null;
   try {
-    if (req.body.user && req.headers.cookie) {
+    if (req?.user && req.headers.cookie) {
       token = req.headers.cookie?.split("=")[1];
       res.status(200).json({ token });
     } else {
       res.status(401).json({ token });
     }
   } catch (err) {
-    console.log("checkAuth",err);
+    console.log("checkAuth", err);
   }
 };
 
